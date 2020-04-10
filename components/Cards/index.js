@@ -18,3 +18,66 @@
 // </div>
 //
 // Use your function to create a card for each of the articles and add the card to the DOM.
+
+function make(element) {
+    return document.createElement(element);
+}
+
+function get(selector) {
+    return document.querySelector(selector);
+}
+
+const cardContainer = get('.cards-container');
+
+function articleMaker({ headline, authorPhoto, authorName }) {
+    const card = make('div');
+    const title = make('div');
+    const author = make('div');
+    const imgContainer = make('div');
+    const img = make('img');
+    const name = make('span');
+
+    card.setAttribute('class', 'card');
+    title.setAttribute('class', 'headline');
+    author.setAttribute('class', 'author');
+    imgContainer.setAttribute('class', 'img-container');
+    title.textContent = headline;
+    img.src = authorPhoto;
+    name.textContent = `By: ${authorName}`;
+
+    card.appendChild(title);
+    card.appendChild(author);
+    author.appendChild(imgContainer);
+    imgContainer.appendChild(img);
+    author.appendChild(name);
+
+    return card;
+}
+
+fetch('https://lambda-times-backend.herokuapp.com/articles')
+    .then (response => response.json())
+    .then (
+        data => {
+            console.log(data.articles);
+            data.articles.javascript.forEach(article => {
+                cardContainer.appendChild(articleMaker(article));
+            });
+            data.articles.bootstrap.forEach(article => {
+                cardContainer.appendChild(articleMaker(article));
+            });
+            data.articles.technology.forEach(article => {
+                cardContainer.appendChild(articleMaker(article));
+            });
+            data.articles.jquery.forEach(article => {
+                cardContainer.appendChild(articleMaker(article));
+            });
+            data.articles.node.forEach(article => {
+                cardContainer.appendChild(articleMaker(article));
+            });
+        }
+    )
+    .catch (
+        error => {
+            alert(`The articles could not be retrieved.`)
+        }
+    )
